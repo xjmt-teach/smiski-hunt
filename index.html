@@ -183,5 +183,41 @@ function cycleHint(i) {
     card.parentElement.classList.add("flipped");
   }
 
-  if (hintStates[i] =
+  if (hintStates[i] === 2) {
+    hintBox.innerHTML = `
+      <strong>Hint 1:</strong> ${smiskis[i].hint1}<br><br>
+      <strong>Hint 2:</strong> ${smiskis[i].hint2}
+    `;
+  }
+
+  if (hintStates[i] === 3) {
+    hintStates[i] = 0;
+    card.parentElement.classList.remove("flipped");
+    hintBox.innerHTML = `
+      <strong>Hint 1:</strong> ${smiskis[i].hint1}<br><br>
+      <strong>Hint 2:</strong> <em>- tap again -</em>
+    `;
+  }
+}
+
+function updateCount() {
+  const checked = document.querySelectorAll("input:checked").length;
+  document.getElementById("count").textContent = checked;
+
+  if (checked === smiskis.length) {
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("rewardScreen").classList.remove("hidden");
+  }
+}
+
+function resetGame() {
+  location.reload();
+}
+
+renderList();
+
+</script>
+
+</body>
+</html>
 
