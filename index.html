@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hidden Smiski Hunt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5fff7;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 { color: #3dbb6a; }
+
+    .hidden { display: none; }
+
+    .smiski {
+      background: white;
+      margin: 15px auto;
+      padding: 12px;
+      border-radius: 12px;
+      max-width: 450px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      background: #3dbb6a;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .flip-card {
+      background: transparent;
+      width: 100px;
+      height: 100px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front, .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 8px;
+    }
+
+    .flip-front img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .flip-back {
+      background: #e8fff0;
+      color: #2f7f4f;
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    #rewardScreen {
+      padding: 40px;
+    }
+
+    #rewardScreen h1 {
+      font-size: 28px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="languageSelect">
+  <h1>🌍 Choose your language</h1>
+  <button onclick="startGame()">Start</button>
+</div>
+
+<div id="game" class="hidden">
+  <h1>🟢 Hidden Smiski Hunt</h1>
+  <p>There are 28 Smiskis secretly living in this apartment. Can you find them all?</p>
+
+  <div>
+    <strong>Found:</strong>
+    <span id="count">0</span> / 28
+  </div>
+
+  <div id="list"></div>
+  <button onclick="resetGame()">Reset</button>
+</div>
+
+<div id="rewardScreen" class="hidden">
+  <h1>🎉 SECRET ACHIEVEMENT UNLOCKED 🎉</h1>
+  <p>You found all 28 Smiskis.</p>
+  <p>You are now officially a</p>
+  <h2>✨ Supreme Smiski Spotter™ ✨</h2>
+  <button onclick="resetGame()">Play Again</button>
+</div>
+
+<script>
+
+const smiskis = [
+{ name:"Smiski Lounging", image:"lounging.png", hint1:"Living room", hint2:"Gotta look up!" },
+{ name:"Smiski Peeking", image:"peeking.png", hint1:"Bedroom", hint2:"Up we go!" },
+{ name:"Smiski Little (Smelly)", image:"smelly.png", hint1:"Bathroom", hint2:"Have you been to the toilet yet?" },
+{ name:"Smiski Squatting", image:"squatting.png", hint1:"Bathroom", hint2:"Did you wash your hands?" },
+{ name:"Smiski Holding In", image:"holdingin.png", hint1:"Bathroom", hint2:"He’s looking up to you!" },
+{ name:"Smiski Scrubbing", image:"scrubbing.png", hint1:"Bathroom", hint2:"Did you wash your hands?" },
+{ name:"Smiski Daydreaming", image:"daydreaming.png", hint1:"Office", hint2:"They always watch me grade exams." },
+{ name:"Smiski Playing", image:"playing.png", hint1:"Living room", hint2:"My best friend made that swing!" },
+{ name:"Smiski Naptime", image:"naptime.png", hint1:"Living room", hint2:"Hard to miss this one!" },
+{ name:"Smiski Sleepy", image:"sleepy.png", hint1:"Bedroom", hint2:"Turn off the lights!" },
+{ name:"Smiski Co-Sleeping", image:"co-sleeping.png", hint1:"Office", hint2:"idk yet" },
+{ name:"Smiski At Sleep", image:"atsleep.png", hint1:"Bedroom", hint2:"He sleeps where I sleep. Kind of." },
+{ name:"Smiski Fussing", image:"fussing.png", hint1:"Hallway", hint2:"He doesn’t want you to leave!" },
+{ name:"Smiski Fuzin&Raijin", image:"fuzinraijin.png", hint1:"Living room", hint2:"They protect my alchemists!" },
+{ name:"Smiski Dali", image:"dali.png", hint1:"Hallway", hint2:"Flowers make him sleepy I guess." },
+{ name:"Smiski Approving", image:"approving.png", hint1:"Living room", hint2:"He approves my cooking!" },
+{ name:"Smiski Researching", image:"researching.png", hint1:"Office", hint2:"idk yet" },
+{ name:"Smiski Presenting", image:"presenting.png", hint1:"Office", hint2:"Maybe he is presenting a PowerPoint?" },
+{ name:"Smiski Good Idea", image:"goodidea.png", hint1:"Living room", hint2:"A light dawned on him!" },
+{ name:"Smiski Lose Pants", image:"loosepants.png", hint1:"Bedroom", hint2:"He puts on his pants where I put on my pants!" },
+{ name:"Smiski Sweater", image:"sweater.png", hint1:"Bedroom", hint2:"idk yet" },
+{ name:"Smiski Dumbbell", image:"dumbbell.png", hint1:"Living room", hint2:"idk yet" },
+{ name:"Smiski Balancing Boxes", image:"balancingboxes.png", hint1:"Living room", hint2:"I hope he won’t get wet!" },
+{ name:"Little Smiski Teamwork", image:"teamwork.png", hint1:"Office", hint2:"Only one more flowerpot!" },
+{ name:"Green Thumb Smiski", image:"greenthumb.png", hint1:"Living room", hint2:"He really cares for my half-dead plants!" },
+{ name:"Smiski Sunbathing", image:"sunbathing.png", hint1:"Hallway", hint2:"I think he’s doing it wrong… too shady up there!" },
+{ name:"Smiski Sing-Along", image:"sing-along.png", hint1:"Living room", hint2:"He really likes music!" },
+{ name:"Smiski Giving A Bouquet", image:"givingabouquet.png", hint1:"Office", hint2:"He loves flowers!" }
+];
+
+let hintStates = {};
+
+function startGame() {
+  document.getElementById("languageSelect").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  renderList();
+}
+
+function renderList() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  smiskis.forEach((s, i) => {
+    const div = document.createElement("div");
+    div.className = "smiski";
+
+    div.innerHTML = `
+      <div class="flip-card" onclick="cycleHint(${i})">
+        <div class="flip-inner" id="card-${i}">
+          <div class="flip-front">
+            <img src="${s.image}">
+          </div>
+          <div class="flip-back">
+            <div id="hint-${i}">
+              <strong>Hint 1:</strong> ${s.hint1}<br><br>
+              <strong>Hint 2:</strong> <em>- tap again -</em>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="checkbox" onchange="updateCount()">
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+function cycleHint(i) {
+  if (!hintStates[i]) hintStates[i] = 0;
+  hintStates[i]++;
+
+  const card = document.getElementById(`card-${i}`);
+  const hintBox = document.getElementById(`hint-${i}`);
+
+  if (hintStates[i] === 1) {
+    card.parentElement.classList.add("flipped");
+  }
+
+  if (hintStates[i] === 2) {
+    hintBox.innerHTML = `
+      <strong>Hint 1:</strong> ${smiskis[i].hint1}<br><br>
+      <strong>Hint 2:</strong> ${smiskis[i].hint2}
+    `;
+  }
+
+  if (hintStates[i] === 3) {
+    hintStates[i] = 0;
+    card.parentElement.classList.remove("flipped");
+    hintBox.innerHTML = `
+      <strong>Hint 1:</strong> ${smiskis[i].hint1}<br><br>
+      <strong>Hint 2:</strong> <em>- tap again -</em>
+    `;
+  }
+}
+
+function updateCount() {
+  const checked = document.querySelectorAll("input:checked").length;
+  document.getElementById("count").textContent = checked;
+
+  if (checked === smiskis.length) {
