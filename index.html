@@ -43,7 +43,6 @@
   height: 150px;
   perspective: 1000px;
   cursor: pointer;
-  border: 2px solid red; /* temporary to see the box */
 }
 
 
@@ -83,6 +82,12 @@
       font-size: 12px;
     }
 
+    input[type="checkbox"] {
+      transform: scale(1.5);   /* 1.5 = 150% size, change to whatever you like */
+      margin-left: 10px;       /* optional spacing from the Smiski card */
+      cursor: pointer;         /* makes the pointer show as a hand on hover */
+    }
+
     #rewardScreen {
       padding: 40px;
     }
@@ -91,7 +96,10 @@
 <body>
 
 <div id="game">
-  <h1>🟢 Hidden Smiski Hunt</h1>
+  <h1>
+  <img src="smiskiheadpix.png" style="width:32px; height:32px; vertical-align:middle; margin-right:8px;">
+  Hidden Smiski Hunt
+  </h1>
   <p>There are 29 Smiskis secretly living in this apartment. Can you find them all?</p>
 
   <div>
