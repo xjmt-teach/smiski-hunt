@@ -147,8 +147,10 @@ const smiskis = [
 let hintStates = {};
 
 function renderList() {
+  console.log("renderList running!");
   const list = document.getElementById("list");
-
+  list.innerHTML = "";
+ 
   smiskis.forEach((s, i) => {
     const div = document.createElement("div");
     div.className = "smiski";
