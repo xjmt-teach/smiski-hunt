@@ -15,16 +15,18 @@
 
     .hidden { display: none; }
 
-    .smiski {
-      background: white;
-      margin: 15px auto;
-      padding: 12px;
-      border-radius: 12px;
-      max-width: 450px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      display: flex;
-      align-items: center;
-    }
+   .smiski {
+     background: white;
+     margin: 15px auto;
+     padding: 12px;
+     border-radius: 12px;
+     max-width: 450px;
+     box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+
+     display: flex;
+     align-items: center;
+     gap: 15px;         /* space between flip-card and checkbox */
+}
     
     input[type="checkbox"] {
       transform: scale(3);
@@ -96,7 +98,7 @@
 
 <div id="game">
   <h1>
-  <img src="smiskiheadpix.png" style="width:32px; height:32px; vertical-align:middle; margin-right:8px;"><br>
+  <img src="smiskiheadpix.png" style="width:60px; height:60px; vertical-align:middle; margin-right:8px;"><br>
   Hidden Smiski Hunt
   </h1>
   <p>There are 29 Smiskis secretly living in this apartment. Can you find them all?</p>
