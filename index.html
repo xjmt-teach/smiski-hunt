@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
   <title>Hidden Smiski Hunt</title>
@@ -24,9 +24,14 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       display: flex;
       align-items: center;
-      justify-content: space-between;
     }
-
+    
+    input[type="checkbox"] {
+      transform: scale(3);
+      margin-left: auto;   /* THIS pushes it to fill the space to the right */
+      cursor: pointer;
+    }
+    
     button {
       margin: 10px;
       padding: 10px 20px;
@@ -39,11 +44,11 @@
     }
 
     .flip-card {
-  width: 150px;
-  height: 150px;
-  perspective: 1000px;
-  cursor: pointer;
-}
+      width: 135px;
+      height: 135px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
 
 
     .flip-inner {
@@ -80,13 +85,6 @@
       justify-content: center;
       padding: 8px;
       font-size: 12px;
-    }
-
-    input[type="checkbox"] {
-      transform: scale(3);   /* 1.5 = 150% size, change to whatever you like */
-      position: relative;
-      left: -120px;       
-      cursor: pointer;         /* makes the pointer show as a hand on hover */
     }
 
     #rewardScreen {
