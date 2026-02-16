@@ -15,24 +15,30 @@
 
     .hidden { display: none; }
 
-   .smiski {
-     background: white;
-     margin: 15px auto;
-     padding: 12px;
-     border-radius: 12px;
-     max-width: 450px;
-     box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+     .smiski {
+      background: white;
+      margin: 15px auto;
+      padding: 12px;
+      border-radius: 12px;
+      max-width: 450px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 
-     display: flex;
-     align-items: center;
-     gap: 15px;         /* space between flip-card and checkbox */
-}
+      display: flex;
+      align-items: center;
+      gap: 15px;         /* space between flip-card and checkbox */
+     }
     
-    input[type="checkbox"] {
-      transform: scale(3);
-      left: -35px;
-      cursor: pointer;
+    .checkbox-wrapper {
+     flex: 1;
+     display: flex;
+     justify-content: center;
     }
+
+    input[type="checkbox"] {
+     transform: scale(2.5);
+     cursor: pointer;
+    }
+
     
     button {
       margin: 10px;
@@ -46,10 +52,11 @@
     }
 
     .flip-card {
-      width: 135px;
-      height: 135px;
-      perspective: 1000px;
-      cursor: pointer;
+     width: 135px;
+     height: 135px;
+     perspective: 1000px;
+     cursor: pointer;
+     overflow: hidden;   /* stops hexagon corners from sticking out */
     }
 
 
@@ -74,8 +81,10 @@
     }
 
     .flip-front img {
-      width: 100%;
-      border-radius: 8px;
+     width: 100%;
+     height: 100%;
+     object-fit: contain;  /* keeps whole image visible */
+     display: block;
     }
 
     .flip-back {
@@ -156,29 +165,31 @@ const smiskis = [
 let hintStates = {};
 
 function renderList() {
-  console.log("renderList running!");
   const list = document.getElementById("list");
   list.innerHTML = "";
- 
+
   smiskis.forEach((s, i) => {
     const div = document.createElement("div");
     div.className = "smiski";
 
     div.innerHTML = `
       <div class="flip-card" onclick="cycleHint(${i})">
-        <div class="flip-inner" id="card-${i}">
+        <div class="flip-inner">
           <div class="flip-front">
             <img src="${s.image}">
           </div>
-          <div class="flip-back">
-            <div id="hint-${i}">
-              <strong>Hint 1:</strong> ${s.hint1}<br><br>
-              <strong>Hint 2:</strong> <em>- tap again -</em>
-            </div>
-          </div>
+          <div class="flip-back" id="hint-${i}">
+           <div><strong>Hint 1:</strong> ${s.hint1}</div>
+           <div style="margin-top:8px;">
+            <strong>Hint 2:</strong> <em>- tap again -</em>
+           </div>
         </div>
       </div>
-      <input type="checkbox" onchange="updateCount()">
+    </div>
+
+      <div class="checkbox-wrapper">
+        <input type="checkbox" onchange="updateCount()">
+      </div>
     `;
 
     list.appendChild(div);
@@ -187,31 +198,41 @@ function renderList() {
 
 function cycleHint(i) {
   if (!hintStates[i]) hintStates[i] = 0;
-  hintStates[i]++;
 
-  const card = document.getElementById(`card-${i}`);
+  const card = document.querySelectorAll(".flip-card")[i];
   const hintBox = document.getElementById(`hint-${i}`);
 
+  hintStates[i]++;
+
+  // First tap → flip card
   if (hintStates[i] === 1) {
-    card.parentElement.classList.add("flipped");
+    card.classList.add("flipped");
   }
 
-  if (hintStates[i] === 2) {
+  // Second tap → reveal hint 2
+  else if (hintStates[i] === 2) {
     hintBox.innerHTML = `
-      <strong>Hint 1:</strong> ${smiskis[i].hint1}<br><br>
-      <strong>Hint 2:</strong> ${smiskis[i].hint2}
+      <div><strong>Hint 1:</strong> ${smiskis[i].hint1}</div>
+      <div style="margin-top:8px;">
+        <strong>Hint 2:</strong> ${smiskis[i].hint2}
+      </div>
     `;
   }
 
-  if (hintStates[i] === 3) {
+  // Third tap → reset
+  else {
     hintStates[i] = 0;
-    card.parentElement.classList.remove("flipped");
+    card.classList.remove("flipped");
+
     hintBox.innerHTML = `
-      <strong>Hint 1:</strong> ${smiskis[i].hint1}<br><br>
-      <strong>Hint 2:</strong> <em>- tap again -</em>
+      <div><strong>Hint 1:</strong> ${smiskis[i].hint1}</div>
+      <div style="margin-top:8px;">
+        <strong>Hint 2:</strong> <em>- tap again -</em>
+      </div>
     `;
   }
 }
+
 
 function updateCount() {
   const checked = document.querySelectorAll("input:checked").length;
@@ -227,6 +248,10 @@ function resetGame() {
   location.reload();
 }
 
+  function flipCard(card) {
+  card.classList.toggle("flipped");
+}
+  
 renderList();
 
 </script>
